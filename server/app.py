@@ -7,7 +7,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # or your database U
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# Your models and routes here...
+# Define your models here
 
 if __name__ == '__main__':
     app.run(debug=True)

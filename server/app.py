@@ -1,13 +1,24 @@
 from flask import Flask
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from server.config import Config
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # or your database URI
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db = SQLAlchemy()
+migrate = Migrate()
 
-# Define your models here
-
-if __name__ == '__main__':
-    app.run(debug=True)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    
+    db.init_app(app)
+    migrate.init_app(app, db)
+    
+    from server.controllers.restaurant_controller import restaurants_bp
+    from server.controllers.pizza_controller import pizzas_bp
+    from server.controllers.restaurant_pizza_controller import restaurant_pizzas_bp
+    
+    app.register_blueprint(restaurants_bp)
+    app.register_blueprint(pizzas_bp)
+    app.register_blueprint(restaurant_pizzas_bp)
+    
+    return app

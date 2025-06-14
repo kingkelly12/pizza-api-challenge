@@ -1,13 +1,17 @@
 from server.app import db
+from sqlalchemy import CheckConstraint
 
-class Restaurant(db.Model):
-    __tablename__ = 'restaurants'
+class RestaurantPizza(db.Model):
+    __tablename__ = 'restaurant_pizzas'
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    address = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'), nullable=False)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
     
-restaurant_pizzas = db.relationship('RestaurantPizza', backref='restaurant', cascade='all, delete-orphan')
-
-def __repr__(self):
-    return f"<Restaurant {self.name} at {self.address}>"
+    __table_args__ = (
+        CheckConstraint('price >= 1 AND price <= 30', name='check_price_range'),
+    )
+    
+    def __repr__(self):
+        return f"<RestaurantPizza id={self.id}, price={self.price}, pizza_id={self.pizza_id}, restaurant_id={self.restaurant_id}>"
